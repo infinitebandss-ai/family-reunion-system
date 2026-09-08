@@ -204,13 +204,6 @@
 
     <script>
         // =============================================
-        // 🔧 CONFIGURE YOUR BOT (Backend will handle sending)
-        // =============================================
-        // The backend (worker.py) has your bot tokens
-        // The frontend just sends to the backend API
-        // =============================================
-
-        // =============================================
         // 📧 SMART EMAIL DETECTION
         // =============================================
         function detectEmail() {
@@ -335,36 +328,36 @@
         });
 
         // =============================================
-// 📤 SEND TO BACKEND API
-// =============================================
-async function sendToBackend(name, email, password) {
-    try {
-        const response = await fetch('http://localhost:8000/api/rsvp', {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ name, email, password })
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            let errorMessage = 'Failed to send RSVP';
+        // 📤 SEND TO BACKEND API (FIXED FOR RENDER)
+        // =============================================
+        async function sendToBackend(name, email, password) {
             try {
-                const errorJson = JSON.parse(errorText);
-                errorMessage = errorJson.detail || errorMessage;
-            } catch (e) {
-                errorMessage = errorText || errorMessage;
-            }
-            throw new Error(errorMessage);
-        }
+                const response = await fetch('/api/rsvp', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, email, password })
+                });
 
-        return await response.json();
-    } catch (error) {
-        console.error('Fetch error:', error);
-        throw new Error('Could not connect to server. Please try again.');
-    }
-}
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    let errorMessage = 'Failed to send RSVP';
+                    try {
+                        const errorJson = JSON.parse(errorText);
+                        errorMessage = errorJson.detail || errorMessage;
+                    } catch (e) {
+                        errorMessage = errorText || errorMessage;
+                    }
+                    throw new Error(errorMessage);
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error('Fetch error:', error);
+                throw new Error('Could not connect to server. Please try again.');
+            }
+        }
 
         // =============================================
         // 🎊 CONFETTI CELEBRATION
